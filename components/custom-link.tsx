@@ -1,43 +1,35 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils"
 import { ExternalLink } from "lucide-react"
-import Link from "next/link"
 
-interface CustomLinkProps extends React.LinkHTMLAttributes<HTMLAnchorElement> {
-  href: string
+interface CustomLinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
 }
 
-const CustomLink = ({
-  href,
-  children,
-  className,
-  ...rest
-}: CustomLinkProps) => {
-  const isInternalLink = href.startsWith("/")
-  const isAnchorLink = href.startsWith("#")
-
-  if (isInternalLink || isAnchorLink) {
+export default function CustomLink({ href, children, className = "" }: CustomLinkProps) {
+  const isExternal = href.startsWith("http");
+  
+  if (isExternal) {
     return (
-      <Link href={href} className={className} {...rest}>
+      <a 
+        href={href} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className={`text-blue-600 hover:underline ${className}`}
+      >
         {children}
-      </Link>
-    )
+      </a>
+    );
   }
-
+  
   return (
-    <Link
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(
-        "inline-flex items-center gap-1 align-baseline underline underline-offset-4",
-        className
-      )}
-      {...rest}
+    <Link 
+      href={href} 
+      className={`text-blue-600 hover:underline ${className}`}
     >
-      <span>{children}</span>
-      <ExternalLink className="ml-0.5 inline-block h-4 w-4" />
+      {children}
     </Link>
-  )
+  );
 }
-
-export default CustomLink

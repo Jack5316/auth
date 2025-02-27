@@ -1,13 +1,34 @@
-import { MainNav } from "./main-nav"
-import UserButton from "./user-button"
+import Link from "next/link";
+import { auth } from "@/auth";
+import UserNav from "./user-nav";
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth();
+  
   return (
-    <header className="sticky flex justify-center border-b">
-      <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-4 sm:px-6">
-        <MainNav />
-        <UserButton />
+    <header className="border-b bg-white">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <Link href="/" className="flex items-center font-bold">
+          Minimus
+        </Link>
+        
+        <nav className="flex items-center gap-4">
+          <Link href="/api-example" className="text-sm">
+            API Example
+          </Link>
+          
+          {session ? (
+            <UserNav user={session.user} />
+          ) : (
+            <Link 
+              href="/signin" 
+              className="rounded-md bg-blue-600 px-3 py-2 text-sm text-white"
+            >
+              Sign in
+            </Link>
+          )}
+        </nav>
       </div>
     </header>
-  )
+  );
 }

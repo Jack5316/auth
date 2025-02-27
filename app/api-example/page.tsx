@@ -1,16 +1,28 @@
 "use client"
 import CustomLink from "@/components/custom-link"
 import { useEffect, useState } from "react"
+import { ClientOnly } from "@/components/client-only"
 
 export default function Page() {
-  const [data, setData] = useState()
+  const [data, setData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
-    ;(async () => {
-      const res = await fetch("/api/protected")
-      const json = await res.json()
-      setData(json)
-    })()
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/protected")
+        const json = await res.json()
+        setData(json)
+      } catch (error) {
+        console.error("Failed to fetch data:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    fetchData()
   }, [])
+
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-3xl font-bold">Route Handler Usage</h1>
@@ -29,9 +41,15 @@ export default function Page() {
         <div className="rounded-t-md bg-gray-200 p-4 font-bold">
           Data from API Route
         </div>
-        <pre className="whitespace-pre-wrap break-all px-4 py-6">
-          {JSON.stringify(data, null, 2)}
-        </pre>
+        <ClientOnly>
+          {isLoading ? (
+            <div className="px-4 py-6">Loading...</div>
+          ) : (
+            <pre className="whitespace-pre-wrap break-all px-4 py-6">
+              {JSON.stringify(data, null, 2)}
+            </pre>
+          )}
+        </ClientOnly>
       </div>
     </div>
   )
