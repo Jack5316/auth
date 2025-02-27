@@ -37,6 +37,10 @@ import { createStorage } from "unstorage"
 import memoryDriver from "unstorage/drivers/memory"
 import vercelKVDriver from "unstorage/drivers/vercel-kv"
 import { UnstorageAdapter } from "@auth/unstorage-adapter"
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const storage = createStorage({
   driver: process.env.VERCEL
@@ -51,7 +55,7 @@ const storage = createStorage({
 export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: !!process.env.AUTH_DEBUG,
   theme: { logo: "https://authjs.dev/img/logo-sm.png" },
-  adapter: UnstorageAdapter(storage),
+  adapter: PrismaAdapter(prisma),
   providers: [
     Apple,
     // Atlassian,
@@ -70,7 +74,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Facebook,
     GitHub,
     GitLab,
-    Google,
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     Hubspot,
     Keycloak({ name: "Keycloak (bob/bob)" }),
     LinkedIn,
