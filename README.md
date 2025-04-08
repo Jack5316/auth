@@ -110,3 +110,39 @@ Follow the [Deployment documentation](https://authjs.dev/getting-started/deploym
 ## License
 
 ISC
+
+# Auth Project with Prisma
+
+## Database Setup
+
+This project uses Prisma as an ORM with a PostgreSQL database for authentication.
+
+### Getting Started
+
+1. Copy the environment variables template:
+```bash
+cp .env.example .env
+```
+
+2. Update the `DATABASE_URL` in `.env` with your database credentials.
+
+3. Install dependencies:
+```bash
+npm install
+```
+
+4. Run Prisma migrations to set up your database:
+```bash
+npm run prisma:migrate:dev
+```
+
+5. Generate the Prisma client:
+```bash
+npm run prisma:generate
+```
+
+### Useful Commands
+
+- `npm run prisma:studio`: Open Prisma Studio to manage your database
+- `npm run prisma:migrate:dev`: Create a new migration and apply it
+- `npm run dev`: Start the Next.js development server
